@@ -21,7 +21,8 @@ from django.urls import path, include
 api_version = 'api/v1/'
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(api_version, include('filemanager.urls')),
+    path('', include('filemanager.urls')),  #
+    path('', include('authentication.urls')),
 ]
 
 if settings.DEBUG:

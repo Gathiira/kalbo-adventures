@@ -9,6 +9,8 @@ class Poster(models.Model):
     poster = models.ImageField(upload_to='posters/')
     uploaded_by = models.CharField(max_length=255, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
+    is_referenced = models.BooleanField(default=False)
+    category = models.CharField(max_length=250, null=True)
 
     def __str__(self):
         return str(self.name)

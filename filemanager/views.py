@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -7,6 +9,8 @@ from filemanager import serializers as file_serializers
 from sharedservice import utility_functions
 
 utility_function = utility_functions
+
+log = logging.getLogger(__name__)
 
 
 class FileViewSet(viewsets.ModelViewSet):
@@ -67,7 +71,7 @@ class FileViewSet(viewsets.ModelViewSet):
         try:
             queryset = file_models.Poster.objects.get(id=request)
         except Exception as e:
-            print(e)
+            log.error(e)
             return Response({"details": "File not found"}, status=status.HTTP_404_NOT_FOUND)
 
         category = payload['category']

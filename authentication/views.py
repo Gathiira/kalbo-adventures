@@ -1,4 +1,6 @@
 # Create your views here.
+import logging
+
 from django.contrib.auth import get_user_model
 from rest_framework import status, viewsets, permissions
 from rest_framework.decorators import action
@@ -11,6 +13,8 @@ from authentication.serializers import (
 )
 
 User = get_user_model()
+
+log = logging.getLogger(__name__)
 
 
 class MyObtainTokenPairView(viewsets.ModelViewSet):
@@ -45,6 +49,7 @@ class MyObtainTokenPairView(viewsets.ModelViewSet):
         try:
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
+            log.error(e)
             raise InvalidToken(e.args[0])
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
@@ -71,7 +76,7 @@ class MyObtainTokenPairView(viewsets.ModelViewSet):
             status_code = status.HTTP_200_OK
             response = records.data
         except Exception as e:
-            print(e)
+            log.error(e)
             status_code = status.HTTP_400_BAD_REQUEST
             response = {"details": str(e)}
 

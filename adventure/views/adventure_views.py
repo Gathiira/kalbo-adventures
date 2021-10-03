@@ -1,3 +1,5 @@
+import logging
+
 from django.db import transaction
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
@@ -9,6 +11,8 @@ from sharedservice import utility_functions, time_functions
 
 utility_function = utility_functions
 time_function = time_functions
+
+log = logging.getLogger(__name__)
 
 
 class AdventureViewset(viewsets.ModelViewSet):
@@ -119,7 +123,7 @@ class AdventureViewset(viewsets.ModelViewSet):
         try:
             record = adv_models.Adventure.objects.get(id=payload['request'])
         except Exception as e:
-            print(e)
+            log.error(e)
             return Response({"details": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
 
         record_details = adv_serializers.AdventureDetailSerializer(
@@ -168,7 +172,7 @@ class AdventureViewset(viewsets.ModelViewSet):
         try:
             record = adv_models.Adventure.objects.get(id=payload['request'])
         except Exception as e:
-            print(e)
+            log.error(e)
             return Response({"details": "Adventure does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
         for field_name, field_value in payload.items():
@@ -201,7 +205,7 @@ class AdventureViewset(viewsets.ModelViewSet):
                     }
                     adv_models.Image.objects.create(**image_payload)
         except Exception as e:
-            print(e)
+            log.error(e)
             pass
         try:
             inclusives = payload['inclusives']
@@ -214,7 +218,7 @@ class AdventureViewset(viewsets.ModelViewSet):
                     }
                     adv_models.Inclusives.objects.create(**inclusive_payload)
         except Exception as e:
-            print(e)
+            log.error(e)
             pass
 
         return Response({"details": "Successfully updated"})
@@ -231,7 +235,7 @@ class AdventureViewset(viewsets.ModelViewSet):
         try:
             record = adv_models.Adventure.objects.get(id=payload['request'])
         except Exception as e:
-            print(e)
+            log.error(e)
             return Response({"details": "Adventure does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
         if record.adventure_status in ['COMPLETE', 'CANCELLED']:
@@ -255,7 +259,7 @@ class AdventureViewset(viewsets.ModelViewSet):
         try:
             record = adv_models.Adventure.objects.get(id=payload['request'])
         except Exception as e:
-            print(e)
+            log.error(e)
             return Response({"details": "Adventure does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
         if record.adventure_status in ['COMPLETE', 'CANCELLED']:

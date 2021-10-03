@@ -192,3 +192,37 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+min_level = 'DEBUG'
+# error logging configs
+# logging dictConfig configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,  # keep Django's default loggers
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] %(levelname)s: %(filename)s, %(funcName)s -line, %(lineno)s -- %(message)s'
+        }
+    },
+    'handlers': {
+        'logfile': {
+            # optionally raise to INFO to not fill the log file too quickly
+            'level': "WARNING",  # this level or higher goes to the log file
+            'class': 'logging.handlers.RotatingFileHandler',
+            # IMPORTANT: replace with your desired logfile name!
+            'filename': os.path.join(BASE_DIR, 'logs.log'),
+            'maxBytes': 50 * 10 ** 6,  # will 50 MB do?
+            'backupCount': 3,  # keep this many extra historical files
+            'formatter': 'simple'
+        },
+        'console': {
+            'level': min_level,  # this level or higher goes to the console
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        }
+    },
+    'root': {
+        'handlers': ['console', 'logfile'],
+        'level': min_level,  # this level or higher goes to the console,
+    },
+}

@@ -1,8 +1,12 @@
+import logging
+
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 
 from adventure import models as adv_models
 from adventure import serializers as adv_serializers
+
+log = logging.getLogger(__name__)
 
 
 class PaymentChannelViewset(viewsets.ModelViewSet):
@@ -21,7 +25,7 @@ class PaymentChannelViewset(viewsets.ModelViewSet):
                 adventure.name = payload['name']
                 adventure.save()
         except Exception as e:
-            print(e)
+            log.error(e)
             adventure = adv_models.PaymentChannel.objects.create(**payload)
 
         record_data = self.get_serializer_class()(adventure).data

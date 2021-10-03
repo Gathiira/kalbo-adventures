@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import serializers
 
 from adventure import models as adv_models
@@ -5,11 +7,14 @@ from authentication import models as auth_models
 from filemanager import models as file_models
 from filemanager.serializers import CATEGORIES
 
+log = logging.getLogger(__name__)
+
 
 class GenericRequestSerializer(serializers.Serializer):
     request = serializers.CharField(required=True)
 
 
+#
 class CreatePaymentChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = adv_models.PaymentChannel
@@ -77,7 +82,7 @@ class ImageSerializer(serializers.ModelSerializer):
             url = request.build_absolute_uri(image.poster.url)
             return url
         except Exception as e:
-            print(e)
+            log.error(e)
             return []
 
 
@@ -129,7 +134,7 @@ class AdventureDetailSerializer(ListAdventureSerializer):
 
             return author_details
         except Exception as e:
-            print(e)
+            log.error(e)
             return None
 
     def get_payment_channel(self, obj):
@@ -145,5 +150,5 @@ class AdventureDetailSerializer(ListAdventureSerializer):
                 })
             return channels
         except Exception as e:
-            print(e)
+            log.error(e)
             return []

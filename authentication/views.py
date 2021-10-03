@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from authentication.serializers import (
     MyTokenObtainPairSerializer,
     RegisterSerializer,
-    UserSerializer
+    UserSerializer, ListUserSerializer
 )
 
 User = get_user_model()
@@ -20,6 +20,7 @@ class MyObtainTokenPairView(viewsets.ModelViewSet):
             "login": MyTokenObtainPairSerializer,
             "register": RegisterSerializer,
             "user_details": UserSerializer,
+            "list": ListUserSerializer,
         }
         return mapper.get(self.action, MyTokenObtainPairSerializer)
 
@@ -28,7 +29,14 @@ class MyObtainTokenPairView(viewsets.ModelViewSet):
         if self.action == 'user_details':
             permission_classes = [permissions.IsAuthenticated, ]
 
+        if self.action == 'list':
+            permission_classes = [permissions.IsAuthenticated, ]
+
         return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        queryset = User.objects.all().order_by('-date_registered')
+        return queryset
 
     @action(methods=['POST'], detail=False, url_name='login', url_path='login')
     def login(self, request):

@@ -7,6 +7,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from authentication.models import User
+from filemanager import models as file_models
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -17,6 +18,7 @@ class RegisterSerializer(serializers.Serializer):
         write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
     user_type = serializers.CharField(allow_null=True, allow_blank=True)
+    profile_photo = serializers.CharField(allow_null=True, allow_blank=True)
     full_name = serializers.CharField(required=True)
     phone_number = serializers.CharField(
         required=True, max_length=10, min_length=10,
@@ -44,6 +46,7 @@ class RegisterSerializer(serializers.Serializer):
             )
             user.full_name = validated_data['full_name']
             user.phone_number = validated_data['phone_number']
+            user.profile_photo = validated_data['profile_photo']
             user.is_active = True
             user.enable_phone_notification = True
             user.enable_email_notification = True
@@ -80,22 +83,43 @@ class GroupSerializer(serializers.Serializer):
     name = serializers.CharField()
 
 
-class UserSerializer(serializers.ModelSerializer):
-    roles = serializers.SerializerMethodField('get_user_roles')
-
+class ListUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 'email',
+            'id',
+            'email',
             'full_name',
             'phone_number',
-            'usertype', 'roles',
+            'account_status',
+            'date_registered',
+        ]
+
+
+class UserSerializer(ListUserSerializer):
+    roles = serializers.SerializerMethodField('get_user_roles')
+    profile_photo = serializers.SerializerMethodField('get_profile_photo')
+
+    class Meta:
+        model = User
+        fields = ListUserSerializer.Meta.fields + [
+            'is_active', 'usertype', 'roles',
             'profile_photo', 'enable_phone_notification',
             'enable_email_notification', 'date_registered',
-            'account_status', 'is_active',
         ]
 
     def get_user_roles(self, obj):
         all_roles = obj.groups.all()
         records = GroupSerializer(all_roles, many=True)
         return records.data
+
+    def get_profile_photo(self, obj):
+        try:
+            request = self.context.get('request')
+            profile = obj.profile_photo
+            profile_inst = file_models.Poster.objects.get(id=profile)
+            url = request.build_absolute_uri(profile_inst.poster.url)
+            return url
+        except Exception as e:
+            print(e)
+            return None

@@ -2,6 +2,12 @@ import uuid
 
 from django.db import models
 
+ADVENTURE_STATUS = [
+    ('ONGOING', 'ONGOING'),
+    ('COMPLETE', 'COMPLETE'),
+    ('CANCELLED', 'CANCELLED'),
+]
+
 
 # Create your models here.
 class PaymentChannel(models.Model):
@@ -11,20 +17,29 @@ class PaymentChannel(models.Model):
     is_bank = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f'{self.name}  --- {self.account}  --- {self.is_bank}'
+
 
 class Adventure(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=500)
+    reference_number = models.CharField(max_length=500, unique=True)
+    adventure_status = models.CharField(
+        max_length=500,
+        choices=ADVENTURE_STATUS, default='ONGOING')
+    created_by = models.CharField(max_length=250, null=True)
     description = models.TextField(null=True)
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True)
-    payment_channel = models.ForeignKey(
-        PaymentChannel,
-        on_delete=models.DO_NOTHING,
-        related_name='adventure')
+    payment_channel = models.ManyToManyField(
+        PaymentChannel, related_name='adventure')
     slots = models.IntegerField()
     date_updated = models.DateTimeField(auto_now=True)
     date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.reference_number} -- {self.title}'
 
 
 class Inclusives(models.Model):
@@ -37,10 +52,10 @@ class Inclusives(models.Model):
 class Price(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     adventure = models.OneToOneField(Adventure, on_delete=models.CASCADE, related_name='prices')
-    adult = models.IntegerField()
-    child = models.IntegerField()
-    discount = models.IntegerField()
-    count = models.IntegerField()
+    adult = models.IntegerField(null=True)
+    child = models.IntegerField(null=True)
+    discount = models.IntegerField(null=True)
+    count = models.IntegerField(null=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
 
@@ -48,5 +63,5 @@ class Image(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='images')
     image_id = models.CharField(max_length=250)
-    category = models.CharField(max_length=250)
+    category = models.CharField(max_length=250, null=True)
     date_created = models.DateTimeField(auto_now_add=True)

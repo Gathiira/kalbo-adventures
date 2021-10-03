@@ -1,0 +1,609 @@
+{
+	"info": {
+		"_postman_id": "d3bb3a75-f1db-416c-bc2a-00bf4f34bfdd",
+		"name": "ADVENTURE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "file manager",
+			"item": [
+				{
+					"name": "upload file",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "sample images",
+									"type": "file",
+									"src": "/Users/groot/Pictures/nosema-3.jpg"
+								},
+								{
+									"key": "great wallpaper",
+									"type": "file",
+									"src": "/Users/groot/Pictures/Screenshot 2021-09-25 at 18.12.28.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/filemanager",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"filemanager"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "categorize file uploaded",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"request\":\"{{request}}\",\n    \"category\":\"MAIN\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/filemanager/categorize-file",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"filemanager",
+								"categorize-file"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "clean files not referenced",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "sample images",
+									"type": "file",
+									"src": "/Users/groot/Pictures/wallpaper2.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/filemanager/clean-files",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"filemanager",
+								"clean-files"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "file detail view",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/filemanager/b5d1d816-dca5-41c0-8bed-66585cc93519",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"filemanager",
+								"b5d1d816-dca5-41c0-8bed-66585cc93519"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list files",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/filemanager",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"filemanager"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{A_driver}}"
+							},
+							{
+								"key": "JWTAUTH",
+								"type": "text",
+								"value": "{{J_driver}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"jose@gmail.com\",\n    \"password\":\"admin1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/account/login",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"account",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{A_driver}}"
+							},
+							{
+								"key": "JWTAUTH",
+								"type": "text",
+								"value": "{{J_driver}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"jose2@gmail.com\",\n    \"password\":\"admin1\",\n    \"password2\":\"admin1\",\n    \"user_type\":\"STAFF\",\n    \"full_name\":\"Jose G\",\n    \"phone_number\":\"0700000000\",\n    \"profile_photo\":\"b5d1d816-dca5-41c0-8bed-66585cc93519\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/account/register",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"account",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list registered user",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/account",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user  profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/account/user-profile",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"account",
+								"user-profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "adventure",
+			"item": [
+				{
+					"name": "create adventure",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Malindi Here we go\",\n    \"description\": \"Absolutely amazing\",\n    \"start_date\": \"2021-10-10\",\n    \"end_date\": \"2021-12-10\",\n    \"payment_channel\": [\n        \"e065ffd2-7c14-4b9f-b853-33df86eb998c\",\n        \"e540ce45-8e76-4a70-b604-8afd209bdffa\"\n    ],\n    \"slots\": \"200\",\n    \"inclusives\": [\n        \"Full water package\",\n        \"Full insurance package(Including medical)\"\n    ],\n    \"adult\": \"20000\",\n    \"child\": \"15000\",\n    \"images\": [\n        {\n            \"image_id\": \"b5d1d816-dca5-41c0-8bed-66585cc93519\",\n            \"category\": \"PIC1\"\n        },\n        {\n            \"image_id\": \"0e6a6ad2-2576-4a6c-955d-e95de28d1ddb\",\n            \"category\": \"MAIN\"\n        },\n        {\n            \"image_id\":\"1b230a70-8cf6-4db1-90ed-0f2e9308cc04\",\n            \"category\":\"MAIN\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/adventure/create",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"adventure",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit adventure",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"request\": \"b2485a27-0044-4bfa-8906-d2abaa8e9014\",\n    \"title\": \"Malindi Right Now\",\n    \"reference_number\": \"PMU8PYDEN7\",\n    \"adventure_status\": \"ONGOING\",\n    \"date_created\": \"2021-10-03T18:16:17.487857+03:00\",\n    \"created_by\": {\n        \"names\": \"Jose G\",\n        \"phone_number\": \"0700000000\",\n        \"email\": \"jose@gmail.com\",\n        \"profile_photo\": null\n    },\n    \"description\": \"Absolutely amazing to be out there just chilling\",\n    \"start_date\": \"2021-10-11\",\n    \"end_date\": \"2021-12-10\",\n    \"slots\": 200,\n    \"payment_channel\": [\n        \"e065ffd2-7c14-4b9f-b853-33df86eb998c\"\n    ],\n    \"adult\": 20000,\n    \"child\": 10000,\n    \"inclusives\": [\n        \"Full insurance package(Including medical)\",\n        \"Full Water package(Including bottle)\"\n    ],\n    \"images\": [\n        {\n            \"image_id\": \"0e6a6ad2-2576-4a6c-955d-e95de28d1ddb\",\n            \"image\": \"http://localhost:9090/media/posters/nosema-3_77HLLGS.jpg\",\n            \"category\": \"MAIN\"\n        },\n        {\n            \"image_id\": \"1b230a70-8cf6-4db1-90ed-0f2e9308cc04\",\n            \"image\": \"http://localhost:9090/media/posters/Screenshot_2021-09-25_at_18.12.28.png\",\n            \"category\": \"MAIN\"\n        },\n        {\n            \"image_id\": \"b5d1d816-dca5-41c0-8bed-66585cc93519\",\n            \"image\": \"http://localhost:9090/media/posters/wallpaper2_gRl139w.png\",\n            \"category\": \"PIC1\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/adventure/update",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"adventure",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete adventure",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"request\": \"{{request}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/adventure/delete",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"adventure",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "close adventure",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"request\": \"{{request}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/adventure/close",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"adventure",
+								"close"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancel adventure",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"request\": \"{{request}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/adventure/cancel",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"adventure",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list adventures",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/adventure?filter=ongoing",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"adventure"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "ongoing"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "adventure detail view",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/adventure/detail-view?request={{request}}",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"adventure",
+								"detail-view"
+							],
+							"query": [
+								{
+									"key": "request",
+									"value": "{{request}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "payment channel",
+			"item": [
+				{
+					"name": "create payment channel",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"National Bank\",\n    \"account\":\"12324343545\",\n    \"is_bank\":true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/payment-channel",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"payment-channel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list payment channels",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/payment-channel",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"payment-channel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete payment channel",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/payment-channel/a73ac6ba-5a96-40b1-bc58-cb0809672420",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"payment-channel",
+								"a73ac6ba-5a96-40b1-bc58-cb0809672420"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -48,6 +48,9 @@ class Inclusives(models.Model):
     name = models.CharField(max_length=500)
     date_created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Price(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -57,6 +60,9 @@ class Price(models.Model):
     discount = models.IntegerField(null=True)
     count = models.IntegerField(null=True)
     date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.adult} --- {self.child}'
 
 
 class Image(models.Model):

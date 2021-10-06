@@ -179,7 +179,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\":\"jose@gmail.com\",\n    \"password\":\"admin1\"\n}",
+							"raw": "{\n    \"email\":\"jose2@gmail.com\",\n    \"password\":\"admin1\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -308,7 +308,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Malindi Here we go\",\n    \"description\": \"Absolutely amazing\",\n    \"start_date\": \"2021-10-10\",\n    \"end_date\": \"2021-12-10\",\n    \"payment_channel\": [\n        \"e065ffd2-7c14-4b9f-b853-33df86eb998c\",\n        \"e540ce45-8e76-4a70-b604-8afd209bdffa\"\n    ],\n    \"slots\": \"200\",\n    \"inclusives\": [\n        \"Full water package\",\n        \"Full insurance package(Including medical)\"\n    ],\n    \"adult\": \"20000\",\n    \"child\": \"15000\",\n    \"images\": [\n        {\n            \"image_id\": \"b5d1d816-dca5-41c0-8bed-66585cc93519\",\n            \"category\": \"PIC1\"\n        },\n        {\n            \"image_id\": \"0e6a6ad2-2576-4a6c-955d-e95de28d1ddb\",\n            \"category\": \"MAIN\"\n        },\n        {\n            \"image_id\":\"1b230a70-8cf6-4db1-90ed-0f2e9308cc04\",\n            \"category\":\"MAIN\"\n        }\n    ]\n}",
+							"raw": "{\n    \"title\": \"Malindi Here we go\",\n    \"description\": \"Absolutely amazing\",\n    \"start_date\": \"2021-10-10\",\n    \"end_date\": \"2021-12-10\",\n    \"payment_channel\": [\n        \"e065ffd2-7c14-4b9f-b853-33df86eb998c\",\n        \"e540ce45-8e76-4a70-b604-8afd209bdffa\"\n    ],\n    \"slots\": \"200\",\n    \"inclusives\": [\n        \"Full water package\",\n        \"Full insurance package(Including medical)\"\n    ],\n    \"organizers\": [\n        \"8f2e6979-1b2a-430a-9cac-0d9fa57bda95\",\n        \"225cd33c-7ce2-4db0-9ce9-c5a5e30d77b1\"\n    ],\n    \"category\": [\n        \"84f27680-94ba-4594-9207-633ef310c136\",\n        \"e3124849-e496-4317-81c4-f911a3f451c1\"\n    ],\n    \"adult\": \"20000\",\n    \"child\": \"15000\",\n    \"images\": [\n        {\n            \"image_id\": \"b5d1d816-dca5-41c0-8bed-66585cc93519\",\n            \"category\": \"PIC1\"\n        },\n        {\n            \"image_id\": \"0e6a6ad2-2576-4a6c-955d-e95de28d1ddb\",\n            \"category\": \"MAIN\"\n        },\n        {\n            \"image_id\":\"1b230a70-8cf6-4db1-90ed-0f2e9308cc04\",\n            \"category\":\"MAIN\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -468,7 +468,8 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "Bearer {{auth}}"
+								"value": "Bearer {{auth}}",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -497,7 +498,8 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "Bearer {{auth}}"
+								"value": "Bearer {{auth}}",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -598,6 +600,90 @@
 							"path": [
 								"payment-channel",
 								"a73ac6ba-5a96-40b1-bc58-cb0809672420"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "category",
+			"item": [
+				{
+					"name": "create category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Mountain Climbing\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/category",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/category",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{auth}}"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/category/aae9df0e-7997-48d6-a012-ac4037b5f535",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"category",
+								"aae9df0e-7997-48d6-a012-ac4037b5f535"
 							]
 						}
 					},

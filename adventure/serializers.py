@@ -27,6 +27,18 @@ class ListPaymentChannelSerializer(CreatePaymentChannelSerializer):
         fields = CreatePaymentChannelSerializer.Meta.fields + ['id', 'date_created', ]
 
 
+class CreateCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = adv_models.Category
+        fields = ['name']
+
+
+class ListCategorySerializer(CreateCategorySerializer):
+    class Meta:
+        model = adv_models.Category
+        fields = CreateCategorySerializer.Meta.fields + ['id', 'date_created', ]
+
+
 class CreateImageSerializer(serializers.Serializer):
     image_id = serializers.UUIDField(required=True)
     category = serializers.ChoiceField(required=True, choices=CATEGORIES)
@@ -38,6 +50,8 @@ class CreateAdventureSerializer(serializers.Serializer):
     start_date = serializers.DateField(required=True)
     end_date = serializers.DateField(required=True)
     payment_channel = serializers.ListField(required=True)
+    organizers = serializers.ListField(required=True)
+    category = serializers.ListField(required=True)
     slots = serializers.IntegerField(required=True)
     inclusives = serializers.ListField(required=True)
     adult = serializers.IntegerField(required=True)
@@ -59,6 +73,26 @@ class CreateAdventureSerializer(serializers.Serializer):
         images_instances = file_models.Poster.objects.filter(id__in=images)
         if len(images) != images_instances.count():
             raise serializers.ValidationError('Invalid images provided')
+
+        # validate organizers
+        organizers = set(obj['organizers'])
+        organizer_instances = auth_models.User.objects.filter(id__in=organizers)
+        if len(organizers) != organizer_instances.count():
+            raise serializers.ValidationError('Invalid organizers')
+
+        obj.update({
+            "organizers_instances": organizer_instances
+        })
+
+        # validate categories
+        categories = set(obj['category'])
+        category_instances = adv_models.Category.objects.filter(id__in=categories)
+        if len(categories) != category_instances.count():
+            raise serializers.ValidationError('Invalid Category(s)')
+
+        obj.update({
+            "category_instances": category_instances
+        })
 
         return obj
 
@@ -100,12 +134,16 @@ class ListAdventureSerializer(serializers.ModelSerializer):
 
 class AdventureDetailSerializer(ListAdventureSerializer):
     created_by = serializers.SerializerMethodField('get_created_by')
+    organizers = serializers.SerializerMethodField('get_organizers')
     payment_channel = serializers.SerializerMethodField('get_payment_channel')
+    categories = serializers.SerializerMethodField('get_categories')
 
     class Meta:
         model = adv_models.Adventure
         fields = ListAdventureSerializer.Meta.fields + [
             'created_by',
+            'organizers',
+            'categories',
             'description',
             'start_date',
             'end_date',
@@ -119,6 +157,7 @@ class AdventureDetailSerializer(ListAdventureSerializer):
             request = self.context.get('request')
             author = auth_models.User.objects.get(id=created_by)
             author_details = {
+                "userid": author.id,
                 "names": author.full_name,
                 "phone_number": author.phone_number,
                 "email": author.email,
@@ -137,6 +176,30 @@ class AdventureDetailSerializer(ListAdventureSerializer):
             log.error(e)
             return None
 
+    def get_organizers(self, obj):
+        try:
+            organizers = obj.organizer.all()
+            request = self.context.get('request')
+            organizer_details = []
+            for organizer in organizers:
+                user_details = {
+                    "userid": organizer.id,
+                    "names": organizer.full_name,
+                    "phone_number": organizer.phone_number,
+                    "email": organizer.email,
+                    "profile_photo": None,
+                }
+                profile = file_models.Poster.objects.filter(id=organizer.profile_photo)
+                if profile:
+                    profile_inst = profile.first()
+                    url = request.build_absolute_uri(profile_inst.poster.url)
+                    user_details['profile_photo'] = url
+                organizer_details.append(user_details)
+            return organizer_details
+        except Exception as e:
+            log.error(e)
+            return None
+
     def get_payment_channel(self, obj):
         try:
             payment_channels = obj.payment_channel.all()
@@ -149,6 +212,20 @@ class AdventureDetailSerializer(ListAdventureSerializer):
                     "is_bank": channel.is_bank
                 })
             return channels
+        except Exception as e:
+            log.error(e)
+            return []
+
+    def get_categories(self, obj):
+        try:
+            categories = obj.category.all()
+            all_categories = []
+            for category in categories:
+                all_categories.append({
+                    "id": category.id,
+                    "name": category.name
+                })
+            return all_categories
         except Exception as e:
             log.error(e)
             return []

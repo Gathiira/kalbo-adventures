@@ -2,6 +2,8 @@ import uuid
 
 from django.db import models
 
+from authentication import models as auth_models
+
 ADVENTURE_STATUS = [
     ('ONGOING', 'ONGOING'),
     ('COMPLETE', 'COMPLETE'),
@@ -9,7 +11,15 @@ ADVENTURE_STATUS = [
 ]
 
 
-# Create your models here.
+class Category(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=250)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class PaymentChannel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=250)
@@ -33,14 +43,17 @@ class Adventure(models.Model):
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True)
     payment_channel = models.ManyToManyField(
-        PaymentChannel, related_name='adventure')
+        PaymentChannel, related_name='adventure', blank=True)
+    category = models.ManyToManyField(
+        Category, related_name='category')
+    organizer = models.ManyToManyField(
+        auth_models.User, related_name='organizer')
     slots = models.IntegerField()
     date_updated = models.DateTimeField(auto_now=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.reference_number} -- {self.title}'
-
 
 class Inclusives(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

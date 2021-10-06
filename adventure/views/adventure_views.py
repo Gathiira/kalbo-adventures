@@ -17,12 +17,26 @@ log = logging.getLogger(__name__)
 
 class AdventureViewset(viewsets.ModelViewSet):
     search_fields = ['reference_number', 'title']
-    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = adv_serializers.ListAdventureSerializer
 
     def get_authenticated_user_id(self):
         user = self.request.user
         return user.id
+
+    def get_permissions(self):
+        permission_classes = []
+        if self.action == 'list':
+            permission_classes = [permissions.AllowAny, ]
+        if self.action == 'detail_view':
+            permission_classes = [permissions.AllowAny, ]
+        if self.action in ['create_adventure',
+                           'delete_adventure',
+                           'update_adventure',
+                           'close_adventure',
+                           'cancel_adventure']:
+            permission_classes = [permissions.IsAuthenticated, ]
+
+        return [permission() for permission in permission_classes]
 
     def get_queryset(self):
         _adventure = self.request.query_params.get('filter')
@@ -78,7 +92,11 @@ class AdventureViewset(viewsets.ModelViewSet):
             #  set payment methods
             validated_data = serializer.validated_data
             payment_instances = validated_data['payment_instances']
+            organizers = validated_data['organizers_instances']
+            categories = validated_data['category_instances']
             adv_record.payment_channel.set(payment_instances)
+            adv_record.organizer.set(organizers)
+            adv_record.category.set(categories)
             adv_record.save()
 
             # create inclusives
@@ -176,7 +194,7 @@ class AdventureViewset(viewsets.ModelViewSet):
             return Response({"details": "Adventure does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
         for field_name, field_value in payload.items():
-            if field_name in ["payment_channel", "inclusives", "images"]:
+            if field_name in ["payment_channel", "inclusives", "images", 'organizers', 'category']:
                 continue
             else:
                 if hasattr(record, field_name):
@@ -186,6 +204,8 @@ class AdventureViewset(viewsets.ModelViewSet):
 
         record.created_by = self.get_authenticated_user_id()
         record.payment_channel.set(validated_data['payment_instances'])
+        record.payment_channel.set(validated_data['organizers_instances'])
+        record.category.set(validated_data['category_instances'])
         record.save()
 
         price = record.prices
@@ -228,7 +248,7 @@ class AdventureViewset(viewsets.ModelViewSet):
         detail=False,
         url_path='close',
         url_name='close')
-    def close_adventure(self, request, *args, **kwargs):
+    def closeclose_adventure_adventure(self, request, *args, **kwargs):
         payload = request.data
         serializer = adv_serializers.GenericRequestSerializer(data=payload, many=False)
         serializer.is_valid(raise_exception=True)

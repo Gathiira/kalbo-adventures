@@ -134,6 +134,7 @@ class ListAdventureSerializer(serializers.ModelSerializer):
         model = adv_models.Adventure
         fields = [
             'id', 'title',
+            'description',
             'reference_number',
             'adventure_status',
             'categories',
@@ -173,7 +174,6 @@ class AdventureDetailSerializer(ListAdventureSerializer):
         fields = ListAdventureSerializer.Meta.fields + [
             'created_by',
             'organizers',
-            'description',
             'slots',
             'payment_channel',
         ]

@@ -1,6 +1,7 @@
 import logging
 
 from django.db import transaction
+from rest_framework import filters
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -16,7 +17,8 @@ log = logging.getLogger(__name__)
 
 
 class AdventureViewset(viewsets.ModelViewSet):
-    search_fields = ['reference_number', 'title']
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['reference_number', 'title', 'description', 'organizer__full_name']
     serializer_class = adv_serializers.ListAdventureSerializer
 
     def get_authenticated_user_id(self):

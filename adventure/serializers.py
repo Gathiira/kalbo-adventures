@@ -127,26 +127,53 @@ class PriceSerializer(serializers.ModelSerializer):
 
 
 class ListAdventureSerializer(serializers.ModelSerializer):
+    categories = serializers.SerializerMethodField('get_categories')
+    main_image = serializers.SerializerMethodField('get_main_image')
+
     class Meta:
         model = adv_models.Adventure
-        fields = ['id', 'title', 'reference_number', 'adventure_status', 'date_created']
+        fields = [
+            'id', 'title',
+            'reference_number',
+            'adventure_status',
+            'categories',
+            'start_date',
+            'end_date',
+            'main_image',
+            'date_created']
+
+    def get_categories(self, obj):
+        try:
+            categories = obj.category.all()
+            all_categories = []
+            for category in categories:
+                all_categories.append({
+                    "id": category.id,
+                    "name": category.name
+                })
+            return all_categories
+        except Exception as e:
+            log.error(e)
+            return []
+
+    def get_main_image(self, obj):
+        images = obj.images.filter(category='MAIN')
+        images_details = ImageSerializer(
+            images, many=True, context=self.context).data
+        return images_details
 
 
 class AdventureDetailSerializer(ListAdventureSerializer):
     created_by = serializers.SerializerMethodField('get_created_by')
     organizers = serializers.SerializerMethodField('get_organizers')
     payment_channel = serializers.SerializerMethodField('get_payment_channel')
-    categories = serializers.SerializerMethodField('get_categories')
 
     class Meta:
         model = adv_models.Adventure
         fields = ListAdventureSerializer.Meta.fields + [
             'created_by',
             'organizers',
-            'categories',
             'description',
-            'start_date',
-            'end_date',
             'slots',
             'payment_channel',
         ]
@@ -212,20 +239,6 @@ class AdventureDetailSerializer(ListAdventureSerializer):
                     "is_bank": channel.is_bank
                 })
             return channels
-        except Exception as e:
-            log.error(e)
-            return []
-
-    def get_categories(self, obj):
-        try:
-            categories = obj.category.all()
-            all_categories = []
-            for category in categories:
-                all_categories.append({
-                    "id": category.id,
-                    "name": category.name
-                })
-            return all_categories
         except Exception as e:
             log.error(e)
             return []

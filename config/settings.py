@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'filemanager',
     'authentication',
     'adventure',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

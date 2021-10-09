@@ -10,9 +10,14 @@ log = logging.getLogger(__name__)
 
 
 class CategoryViewset(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
     queryset = adv_models.Category.objects.all().order_by('name')
     serializer_class = adv_serializers.ListCategorySerializer
+
+    def get_permissions(self):
+        permission_classes = []
+        if self.action in ['create', 'destroy']:
+            permission_classes = [permissions.IsAuthenticated, ]
+        return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
         payload = request.data

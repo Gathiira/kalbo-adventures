@@ -10,16 +10,21 @@ from authentication.models import User
 from filemanager import models as file_models
 
 
-class RegisterSerializer(serializers.Serializer):
-    email = serializers.EmailField(
-        required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())])
+class GenericRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+
+class ResetPassSerializer(GenericRequestSerializer):
     password = serializers.CharField(
         write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
-    user_type = serializers.CharField(allow_null=True, allow_blank=True)
-    profile_photo = serializers.CharField(allow_null=True, allow_blank=True)
+
+
+class CreateUserSerializer(serializers.Serializer):
     full_name = serializers.CharField(required=True)
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())])
     phone_number = serializers.CharField(
         required=True, max_length=10, min_length=10,
         validators=[RegexValidator(r'^\d{0,10}$', 'Kindly add valid phone number')],
@@ -28,6 +33,14 @@ class RegisterSerializer(serializers.Serializer):
             "min_length": "Should be at least 10 numbers",
             "max_length": "Should be at most 10 numbers",
         })
+    user_type = serializers.CharField(allow_null=True, allow_blank=True)
+
+
+class RegisterSerializer(CreateUserSerializer):
+    password = serializers.CharField(
+        write_only=True, required=True, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=True)
+    profile_photo = serializers.CharField(allow_null=True, allow_blank=True)
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:

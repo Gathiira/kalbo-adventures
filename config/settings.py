@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'filemanager',
     'authentication',
     'adventure',
+    'booking',
     'rest_framework_simplejwt',
     'django_filters',
 ]

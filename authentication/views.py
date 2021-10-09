@@ -8,8 +8,8 @@ from rest_framework.response import Response
 
 from authentication.serializers import (
     MyTokenObtainPairSerializer,
-    RegisterSerializer,
-    UserSerializer, ListUserSerializer
+    RegisterSerializer, ResetPassSerializer,
+    UserSerializer, ListUserSerializer, CreateUserSerializer
 )
 
 User = get_user_model()
@@ -25,6 +25,8 @@ class MyObtainTokenPairView(viewsets.ModelViewSet):
             "register": RegisterSerializer,
             "user_details": UserSerializer,
             "list": ListUserSerializer,
+            "user_register": CreateUserSerializer,
+            "reset_password": ResetPassSerializer,
         }
         return mapper.get(self.action, MyTokenObtainPairSerializer)
 
@@ -48,9 +50,10 @@ class MyObtainTokenPairView(viewsets.ModelViewSet):
 
         try:
             serializer.is_valid(raise_exception=True)
-        except TokenError as e:
+        except Exception as e:
             log.error(e)
-            raise InvalidToken(e.args[0])
+            return Response({"details": "No active account found with the given credentials"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
@@ -81,3 +84,18 @@ class MyObtainTokenPairView(viewsets.ModelViewSet):
             response = {"details": str(e)}
 
         return Response(response, status=status_code)
+
+    @action(methods=['POST'], detail=False, url_name='reset-password', url_path='reset-password')
+    def reset_password(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        payload = request.data
+        try:
+            user = User.objects.get(email=payload['email'])
+        except Exception as e:
+            log.error(e)
+            return Response({"details": "User does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(payload['password'])
+        user.save(update_fields=['password'])
+        return Response({"details": "Password Reset Successfully"}, status=status.HTTP_200_OK)

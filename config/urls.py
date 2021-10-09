@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('filemanager.urls')),  #
     path('', include('authentication.urls')),
     path('', include('adventure.urls')),
+    path('', include('booking.urls')),
 ]
 
 if settings.DEBUG:

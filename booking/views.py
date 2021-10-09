@@ -21,7 +21,7 @@ class BoookingViewSet(viewsets.ModelViewSet):
         mapper = {
             'create': book_serializer.CreateBookingSerializer,
             'list': book_serializer.ListBookingsSerializer,
-            'detail_view': book_serializer.BookingDetailSerializer,
+            'retrieve': book_serializer.BookingDetailSerializer,
         }
         return mapper.get(self.action, None)
 

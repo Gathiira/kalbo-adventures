@@ -64,6 +64,7 @@ class BookingDetailSerializer(ListBookingsSerializer):
     class Meta:
         model = book_models.Booking
         fields = ListBookingsSerializer.Meta.fields + [
+            'adventure',
             'name',
             'phone_number',
             'idnum',

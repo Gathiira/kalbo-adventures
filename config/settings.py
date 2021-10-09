@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'authentication',
     'adventure',
     'booking',
+    'blog',
     'rest_framework_simplejwt',
     'django_filters',
 ]

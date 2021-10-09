@@ -59,7 +59,8 @@ class BlogViewSet(viewsets.ModelViewSet):
 
         try:
             blog = blog_models.Blog.objects.create(**blog_payload)
-        except IntegrityError:
+        except IntegrityError as e:
+            print(e)
             return Response({"details": "Failed to process request. Try again later"},
                             status=status.HTTP_400_BAD_REQUEST)
 
@@ -74,12 +75,18 @@ class BlogViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
+        author = instance.author
+        if author.id != self.get_authenticated_user_id():
+            return Response({"detail": "Not found"}, status=status.HTTP_404_NOT_FOUND)
         self.perform_destroy(instance)
         return Response({"details": "Blog deleted"}, status=status.HTTP_200_OK)
 
     @action(methods=['POST'], detail=True, url_path='publish', url_name='publish')
     def publish(self, request, *args, **kwargs):
         instance = self.get_object()
+        author = instance.author
+        if author.id != self.get_authenticated_user_id():
+            return Response({"detail": "Not found"}, status=status.HTTP_404_NOT_FOUND)
         instance.status = 'PUBLISH'
         instance.save(update_fields=['status'])
         return Response({"details": "Blog published"}, status=status.HTTP_200_OK)

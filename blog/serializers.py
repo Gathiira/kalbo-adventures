@@ -2,6 +2,7 @@ import logging
 
 from rest_framework import serializers
 
+from authentication import models as auth_models
 from blog import models as blog_models
 from filemanager import models as file_models
 from filemanager.serializers import CATEGORIES
@@ -32,7 +33,18 @@ class CreateBlogSerializer(serializers.Serializer):
         return attrs
 
 
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = auth_models.User
+        fields = [
+            'email',
+            'full_name'
+        ]
+
+
 class ListBlogSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer(many=False, read_only=True)
+
     class Meta:
         model = blog_models.Blog
         fields = [

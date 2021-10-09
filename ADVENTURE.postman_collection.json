@@ -179,7 +179,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\":\"jose2@gmail.com\",\n    \"password\":\"admin1\"\n}",
+							"raw": "{\n    \"email\":\"jose1@gmail.com\",\n    \"password\":\"admin1\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -232,6 +232,44 @@
 							"path": [
 								"account",
 								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{A_driver}}"
+							},
+							{
+								"key": "JWTAUTH",
+								"type": "text",
+								"value": "{{J_driver}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"malisafi1@gmail.com\",\n    \"password\":\"admin1\",\n    \"password2\":\"admin1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/account/reset-password",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"account",
+								"reset-password"
 							]
 						}
 					},
@@ -464,14 +502,7 @@
 					"name": "list adventures",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{auth}}",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{local}}/adventure?filter=ongoing",
 							"host": [
@@ -484,6 +515,11 @@
 								{
 									"key": "filter",
 									"value": "ongoing"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
 								}
 							]
 						}
@@ -503,7 +539,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{local}}/adventure/detail-view?request={{request}}",
+							"raw": "{{local}}/adventure/detail-view?request=b084dc9c-8312-43c3-854c-10c3faa87b57",
 							"host": [
 								"{{local}}"
 							],
@@ -514,7 +550,7 @@
 							"query": [
 								{
 									"key": "request",
-									"value": "{{request}}"
+									"value": "b084dc9c-8312-43c3-854c-10c3faa87b57"
 								}
 							]
 						}
@@ -646,13 +682,7 @@
 					"name": "list categories",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{auth}}"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{local}}/category",
 							"host": [
@@ -684,6 +714,84 @@
 							"path": [
 								"category",
 								"aae9df0e-7997-48d6-a012-ac4037b5f535"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "booking",
+			"item": [
+				{
+					"name": "create booking",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"adventure\":\"b084dc9c-8312-43c3-854c-10c3faa87b57\",\n    \"name\":\"Jane Mugo\",\n    \"email\":\"malisafi1@gmail.com\",\n    \"phone_number\":\"0720600705\",\n    \"idnum\":null,\n    \"adult_participants\":2,\n    \"child_participants\":0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/booking",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list bookings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/booking",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "booking detail view",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{local}}/booking/{{request}}",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"booking",
+								"{{request}}"
 							]
 						}
 					},

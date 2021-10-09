@@ -18,7 +18,7 @@ class BlogViewSet(viewsets.ModelViewSet):
             "create": blog_serializers.CreateBlogSerializer,
             "retrieve": blog_serializers.BlogDetailSerializer,
         }
-        return mapper.get(self.action, None)
+        return mapper.get(self.action, blog_serializers.ListBlogSerializer)
 
     def get_permissions(self):
         permission_classes = []

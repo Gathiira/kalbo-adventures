@@ -32,6 +32,7 @@ class AdventureViewset(viewsets.ModelViewSet):
         if self.action == 'detail_view':
             permission_classes = [permissions.AllowAny, ]
         if self.action in ['create_adventure',
+                           'create',
                            'delete_adventure',
                            'update_adventure',
                            'close_adventure',

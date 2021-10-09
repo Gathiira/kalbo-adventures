@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'blog',
     'rest_framework_simplejwt',
     'django_filters',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -184,6 +185,20 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
+# swagger settings
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': True,
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+}
+
+LOGIN_URL = 'authentication:account-login'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

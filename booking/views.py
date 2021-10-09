@@ -23,7 +23,7 @@ class BoookingViewSet(viewsets.ModelViewSet):
             'list': book_serializer.ListBookingsSerializer,
             'retrieve': book_serializer.BookingDetailSerializer,
         }
-        return mapper.get(self.action, None)
+        return mapper.get(self.action, book_serializer.ListBookingsSerializer)
 
     def get_permissions(self):
         permission_classes = []

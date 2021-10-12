@@ -27,20 +27,18 @@ class PaymentChannelViewset(viewsets.ModelViewSet):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
-            adventure = adv_models.PaymentChannel.objects.filter(account=payload['account'])
+            adventure = adv_models.PaymentChannel.objects.get(account=payload['account'])
             if bool(adventure):
                 adventure.name = payload['name']
                 adventure.save()
+                message = 'Updated'
         except Exception as e:
             log.error(e)
             print(payload)
             adventure = adv_models.PaymentChannel.objects.create(**payload)
+            message = 'Created'
 
-        record_data = self.get_serializer_class()(adventure).data
-        record_data.update({
-            'id': str(adventure.id)
-        })
-        return Response(record_data)
+        return Response({"details": f"Payment Channel {message}", "request": str(adventure.id)})
 
     def update(self, request, *args, **kwargs):
         payload = request.data

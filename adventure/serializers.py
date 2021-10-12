@@ -15,16 +15,17 @@ class GenericRequestSerializer(serializers.Serializer):
 
 
 #
-class CreatePaymentChannelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = adv_models.PaymentChannel
-        fields = ['name', 'account', 'is_bank']
+class CreatePaymentChannelSerializer(serializers.Serializer):
+    name = serializers.CharField(required=True)
+    account = serializers.CharField(required=True)
+    is_bank = serializers.BooleanField(required=True)
+    description = serializers.CharField(required=True)
 
 
-class ListPaymentChannelSerializer(CreatePaymentChannelSerializer):
+class ListPaymentChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = adv_models.PaymentChannel
-        fields = CreatePaymentChannelSerializer.Meta.fields + ['id', 'date_created', ]
+        fields = ['id', 'name', 'account', 'description', 'is_bank']
 
 
 class CreateCategorySerializer(serializers.ModelSerializer):

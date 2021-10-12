@@ -25,6 +25,7 @@ class PaymentChannel(models.Model):
     name = models.CharField(max_length=250)
     account = models.CharField(max_length=250)
     is_bank = models.BooleanField(default=False)
+    description = models.TextField(null=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

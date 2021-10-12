@@ -12,7 +12,14 @@ log = logging.getLogger(__name__)
 class PaymentChannelViewset(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = adv_models.PaymentChannel.objects.all().order_by('-date_created')
-    serializer_class = adv_serializers.ListPaymentChannelSerializer
+
+    def get_serializer_class(self):
+        mapper = {
+            "list": adv_serializers.ListPaymentChannelSerializer,
+            "create": adv_serializers.CreatePaymentChannelSerializer,
+            "update": adv_serializers.CreatePaymentChannelSerializer,
+        }
+        return mapper.get(self.action, None)
 
     def create(self, request, *args, **kwargs):
         payload = request.data
@@ -26,6 +33,7 @@ class PaymentChannelViewset(viewsets.ModelViewSet):
                 adventure.save()
         except Exception as e:
             log.error(e)
+            print(payload)
             adventure = adv_models.PaymentChannel.objects.create(**payload)
 
         record_data = self.get_serializer_class()(adventure).data
@@ -33,6 +41,18 @@ class PaymentChannelViewset(viewsets.ModelViewSet):
             'id': str(adventure.id)
         })
         return Response(record_data)
+
+    def update(self, request, *args, **kwargs):
+        payload = request.data
+        instance = self.get_object()
+        serializer = self.get_serializer(data=payload)
+        serializer.is_valid(raise_exception=True)
+        for field_name, field_value in payload.items():
+            if hasattr(instance, field_name):
+                setattr(instance, field_name, field_value)
+        instance.save()
+
+        return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

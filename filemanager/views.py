@@ -41,7 +41,10 @@ class FileViewSet(viewsets.ModelViewSet):
                     "poster": image,
                 }
                 image_inst = file_models.Poster.objects.create(**image_param)
-                all_images.append(image_inst.id)
+                all_images.append({
+                    "id": image_inst.id,
+                    "name": file_details[0],
+                })
 
         return Response(all_images)
 

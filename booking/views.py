@@ -1,6 +1,7 @@
 import logging
 
 from rest_framework import viewsets, filters, status, permissions
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from booking import models as book_models
@@ -19,7 +20,7 @@ class BoookingViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         mapper = {
-            'create': book_serializer.CreateBookingSerializer,
+            'book_adventure': book_serializer.CreateBookingSerializer,
             'list': book_serializer.ListBookingsSerializer,
             'retrieve': book_serializer.BookingDetailSerializer,
         }
@@ -49,7 +50,11 @@ class BoookingViewSet(viewsets.ModelViewSet):
         else:
             return book_models.Booking.objects.filter(user=user).order_by('-date_created')
 
-    def create(self, request, *args, **kwargs):
+    @action(methods=['POST'],
+            detail=False,
+            url_path='book-adventure',
+            url_name='book-adventure')
+    def book_adventure(self, request, *args, **kwargs):
         payload = request.data
         serializer = self.get_serializer(data=payload, many=False)
         serializer.is_valid(raise_exception=True)

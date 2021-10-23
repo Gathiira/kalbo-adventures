@@ -30,7 +30,7 @@
 								{
 									"key": "great wallpaper",
 									"type": "file",
-									"src": "/Users/groot/Pictures/Screenshot 2021-09-25 at 18.12.28.png"
+									"src": "/Users/groot/Pictures/wallpaper.png"
 								}
 							]
 						},
@@ -575,7 +575,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"National Bank\",\n    \"account\":\"12324343545\",\n    \"is_bank\":true,\n    \"description\":\"go to mpesa, paybill\"\n}",
+							"raw": "{\n    \"name\":\"National Bank\",\n    \"account\":\"123243435453\",\n    \"is_bank\":true,\n    \"description\":\"go to mpesa, paybill\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -772,12 +772,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{local}}/booking",
+							"raw": "{{local}}/booking/book-adventure",
 							"host": [
 								"{{local}}"
 							],
 							"path": [
-								"booking"
+								"booking",
+								"book-adventure"
 							]
 						}
 					},

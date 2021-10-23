@@ -1,0 +1,23 @@
+[
+{
+    "model": "auth.group",
+    "fields": {
+        "name": "PUBLIC",
+        "permissions": []
+    }
+},
+{
+    "model": "auth.group",
+    "fields": {
+        "name": "STAFF",
+        "permissions": []
+    }
+},
+{
+    "model": "auth.group",
+    "fields": {
+        "name": "ADMIN",
+        "permissions": []
+    }
+}
+]

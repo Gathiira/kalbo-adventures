@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 .idea/
 media/
+.vscode/
 users.txt

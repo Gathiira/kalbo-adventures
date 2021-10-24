@@ -10,6 +10,24 @@ from filemanager.serializers import CATEGORIES
 log = logging.getLogger(__name__)
 
 
+def get_user_details(user, request):
+    user_details = {
+        "userid": user.id,
+        "names": user.full_name,
+        "phone_number": user.phone_number,
+        "email": user.email,
+        "profile_photo": None,
+    }
+    profile = file_models.Poster.objects.filter(id=user.profile_photo)
+    if profile:
+        profile_inst = profile.first()
+        url = request.build_absolute_uri(profile_inst.poster.url)
+        user_details.update({
+            "profile_photo": url
+        })
+    return user_details
+
+
 class GenericRequestSerializer(serializers.Serializer):
     request = serializers.CharField(required=True)
 
@@ -184,21 +202,7 @@ class AdventureDetailSerializer(ListAdventureSerializer):
         try:
             request = self.context.get('request')
             author = auth_models.User.objects.get(id=created_by)
-            author_details = {
-                "userid": author.id,
-                "names": author.full_name,
-                "phone_number": author.phone_number,
-                "email": author.email,
-                "profile_photo": None,
-            }
-            profile = file_models.Poster.objects.filter(id=author.profile_photo)
-            if profile:
-                profile_inst = profile.first()
-                url = request.build_absolute_uri(profile_inst.poster.url)
-                author_details.update({
-                    "profile_photo": url
-                })
-
+            author_details = get_user_details(author, request)
             return author_details
         except Exception as e:
             log.error(e)
@@ -210,18 +214,7 @@ class AdventureDetailSerializer(ListAdventureSerializer):
             request = self.context.get('request')
             organizer_details = []
             for organizer in organizers:
-                user_details = {
-                    "userid": organizer.id,
-                    "names": organizer.full_name,
-                    "phone_number": organizer.phone_number,
-                    "email": organizer.email,
-                    "profile_photo": None,
-                }
-                profile = file_models.Poster.objects.filter(id=organizer.profile_photo)
-                if profile:
-                    profile_inst = profile.first()
-                    url = request.build_absolute_uri(profile_inst.poster.url)
-                    user_details['profile_photo'] = url
+                user_details = get_user_details(organizer, request)
                 organizer_details.append(user_details)
             return organizer_details
         except Exception as e:
@@ -231,15 +224,8 @@ class AdventureDetailSerializer(ListAdventureSerializer):
     def get_payment_channel(self, obj):
         try:
             payment_channels = obj.payment_channel.all()
-            channels = []
-            for channel in payment_channels:
-                channels.append({
-                    "id": channel.id,
-                    "name": channel.name,
-                    "account": channel.account,
-                    "is_bank": channel.is_bank
-                })
-            return channels
+            channels = ListPaymentChannelSerializer(payment_channels, many=True)
+            return channels.data
         except Exception as e:
             log.error(e)
             return []

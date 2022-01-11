@@ -22,8 +22,8 @@ class CreateBookingSerializer(serializers.Serializer):
             "max_length": "Should be at most 10 numbers",
         })
     idnum = serializers.CharField(allow_null=True)
-    adult_participants = serializers.IntegerField(required=True)
-    child_participants = serializers.IntegerField(required=True, allow_null=True)
+    adult_participants = serializers.IntegerField(required=True, min_value=1)
+    child_participants = serializers.IntegerField(required=True, allow_null=True, min_value=1)
 
     def validate(self, attrs):
         adventure_id = attrs.get('adventure')

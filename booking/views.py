@@ -4,8 +4,7 @@ from rest_framework import viewsets, filters, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from booking import models as book_models
-from booking import serializers as book_serializer
+from booking import models as book_models, serializers as book_serializer
 from sharedservice import service_responses, utility_functions, time_functions
 
 utility_function = utility_functions
@@ -14,7 +13,7 @@ time_function = time_functions
 log = logging.getLogger(__name__)
 
 
-class BoookingViewSet(viewsets.ModelViewSet):
+class BoookingViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['reference_number', ]
 
@@ -58,6 +57,8 @@ class BoookingViewSet(viewsets.ModelViewSet):
         payload = request.data
         serializer = self.get_serializer(data=payload, many=False)
         serializer.is_valid(raise_exception=True)
+
+        payload = serializer.validated_data
 
         # create user
         user_payload = {
